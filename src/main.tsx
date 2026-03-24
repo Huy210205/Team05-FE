@@ -21,19 +21,19 @@ async function bootstrap() {
             localStorage.removeItem('kc-callback');
         }
 
-        // Lưu URL hiện tại trước khi Keycloak init
-        const currentUrl = window.location.origin + window.location.pathname;
+        // Use origin as a stable redirect URI to avoid Keycloak invalid redirect on deep routes.
+        const redirectBase = window.location.origin;
 
         // init Keycloak, bắt buộc login trước khi render app
         const authenticated = await keycloak.init({
             onLoad: 'login-required',
             pkceMethod: 'S256',
             checkLoginIframe: false,
-            redirectUri: currentUrl,
+            redirectUri: redirectBase,
         });
 
         if (!authenticated || !keycloak.token) {
-            await keycloak.login();
+            await keycloak.login({ redirectUri: redirectBase });
             return;
         }
 

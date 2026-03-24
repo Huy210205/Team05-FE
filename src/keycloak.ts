@@ -17,7 +17,7 @@ export async function ensureValidToken(minSeconds = 30): Promise<string | null> 
         await keycloak.updateToken(minSeconds);
         return keycloak.token ?? null;
     } catch (error) {
-        await keycloak.login();
+        await keycloak.login({ redirectUri: window.location.origin });
         return keycloak.token ?? null;
     }
 }

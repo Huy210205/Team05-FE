@@ -27,8 +27,8 @@ export default function BackendErrorHandler() {
 
     const handleGoToLogin = async () => {
         handleClose();
-        try {
-            await keycloak.login();
+           try {
+               await keycloak.login({ redirectUri: window.location.origin });
         } catch (error) {
             // Fallback: reload page if login fails
             window.location.reload();

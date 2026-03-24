@@ -85,7 +85,7 @@ api.interceptors.response.use(
 
         if (status === 401) {
             try {
-                await keycloak.login();
+                await keycloak.login({ redirectUri: window.location.origin });
             } catch (loginError) {
             }
         }
