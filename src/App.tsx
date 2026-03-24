@@ -8,10 +8,25 @@ import BackendErrorHandler from './shared/components/BackendErrorHandler';
 import { useUserProfile } from './stores/userProfile';
 import { useLocation } from 'react-router-dom';
 import { appRoutes } from './app/routes/routeConfig';
+import { useEffect, useState } from 'react';
 
 function AppContent() {
     const { me, loading, error } = useUserProfile();
     const location = useLocation();
+    const [isSlowLoading, setIsSlowLoading] = useState(false);
+
+    useEffect(() => {
+        if (!loading) {
+            setIsSlowLoading(false);
+            return;
+        }
+
+        const timer = window.setTimeout(() => {
+            setIsSlowLoading(true);
+        }, 10000);
+
+        return () => window.clearTimeout(timer);
+    }, [loading]);
 
     // Debug: Log user profile
     // Kiểm tra nếu user là học sinh
@@ -33,7 +48,15 @@ function AppContent() {
     if (loading) {
         return (
             <div className="flex h-screen items-center justify-center">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+                <div className="text-center px-4">
+                    <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+                    <p className="mt-3 text-sm text-gray-600">Dang tai du lieu nguoi dung...</p>
+                    {isSlowLoading && (
+                        <div className="mt-3 text-xs text-amber-700">
+                            Tai lau bat thuong. Thu F5 hoac kiem tra Network/Console trong DevTools.
+                        </div>
+                    )}
+                </div>
             </div>
         );
     }
